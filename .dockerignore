@@ -3,6 +3,7 @@
 .env
 .env.*
 !.env.example
+composer.lock
 vendor
 node_modules
 storage/logs/*
