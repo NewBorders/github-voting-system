@@ -1,53 +1,224 @@
 # Feature Voting Backend - Deployment Guide
 
-## Production Deployment Steps
+## Deployment with Traefik and Ansible
 
-### 1. Prepare Environment
+### Overview
 
-```bash
-# Clone repository
-git clone <your-repo-url>
-cd githubvoting
+This application uses a layered Docker Compose setup:
+- **`docker-compose.yml`** - Base configuration (version controlled)
+- **`docker-compose.override.yml`** - Production overrides (managed by Ansible, NOT in git)
+- **`.env`** - Environment variables (managed by Ansible, NOT in git)
 
-# Copy and configure environment
-cp .env.example .env
-nano .env
+### Architecture
+
+```
+Git Repository (docker-compose.yml)
+         ↓
+Ansible deploys override file + .env
+         ↓
+Docker Compose merges both files
+         ↓
+Traefik routes traffic to container
 ```
 
-### 2. Update .env for Production
+## Ansible Deployment
 
-```bash
+### 1. Create docker-compose.override.yml Template
+
+Create an Ansible template at `templates/githubvoting/docker-compose.override.yml.j2`:
+
+```yaml
+services:
+  app:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.githubvoting.rule=Host(`{{ githubvoting_host }}`)"
+      - "traefik.http.routers.githubvoting.entrypoints=websecure"
+      - "traefik.http.routers.githubvoting.tls.certresolver=le"
+      - "traefik.http.services.githubvoting.loadbalancer.server.port=80"
+    networks:
+      - traefik_network
+      - default
+
+  db:
+    environment:
+      MYSQL_ROOT_PASSWORD: "{{ githubvoting_db_root_password }}"
+      MYSQL_PASSWORD: "{{ githubvoting_db_password }}"
+
+networks:
+  traefik_network:
+    external: true
+```
+
+### 2. Create .env Template
+
+Create `templates/githubvoting/.env.j2`:
+
+```env
+APP_NAME="Feature Voting"
 APP_ENV=production
+APP_KEY={{ githubvoting_app_key }}
 APP_DEBUG=false
-APP_URL=https://your-domain.com
+APP_URL=https://{{ githubvoting_host }}
 
-# Generate a strong random token
-ADMIN_API_TOKEN=$(openssl rand -base64 32)
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=voting
+DB_USERNAME={{ githubvoting_db_user }}
+DB_PASSWORD={{ githubvoting_db_password }}
 
-# Production database credentials
-DB_HOST=your-production-db-host
-DB_DATABASE=voting_production
-DB_USERNAME=voting_user
-DB_PASSWORD=strong-password-here
+ADMIN_API_TOKEN={{ githubvoting_admin_token }}
 ```
 
-### 3. Deploy with Docker
+### 3. Ansible Playbook
+
+```yaml
+- name: Deploy GitHub Voting System
+  hosts: production_servers
+  vars:
+    githubvoting_host: "voting.yourdomain.com"
+    githubvoting_app_dir: "/opt/githubvoting"
+    githubvoting_db_user: "voting"
+    githubvoting_db_password: "{{ vault_githubvoting_db_password }}"
+    githubvoting_db_root_password: "{{ vault_githubvoting_db_root_password }}"
+    githubvoting_admin_token: "{{ vault_githubvoting_admin_token }}"
+    githubvoting_app_key: "{{ vault_githubvoting_app_key }}"
+  
+  tasks:
+    - name: Clone repository
+      git:
+        repo: "https://github.com/Muardin/github-voting-system.git"
+        dest: "{{ githubvoting_app_dir }}"
+        version: main
+        force: yes
+      notify: restart githubvoting
+
+    - name: Create .env file
+      template:
+        src: templates/githubvoting/.env.j2
+        dest: "{{ githubvoting_app_dir }}/.env"
+        mode: '0600'
+      notify: restart githubvoting
+
+    - name: Create docker-compose.override.yml
+      template:
+        src: templates/githubvoting/docker-compose.override.yml.j2
+        dest: "{{ githubvoting_app_dir }}/docker-compose.override.yml"
+        mode: '0644'
+      notify: restart githubvoting
+
+    - name: Ensure traefik network exists
+      docker_network:
+        name: traefik_network
+        state: present
+
+    - name: Start services
+      community.docker.docker_compose:
+        project_src: "{{ githubvoting_app_dir }}"
+        state: present
+        pull: yes
+      register: output
+
+    - name: Run database migrations
+      command: docker compose exec -T app php artisan migrate --force
+      args:
+        chdir: "{{ githubvoting_app_dir }}"
+      when: output.changed
+
+  handlers:
+    - name: restart githubvoting
+      community.docker.docker_compose:
+        project_src: "{{ githubvoting_app_dir }}"
+        restarted: yes
+```
+
+### 4. Ansible Vault for Secrets
 
 ```bash
-# Build for production
-docker-compose -f docker-compose.prod.yml up -d --build
-
-# Run migrations
-docker-compose exec app php artisan migrate --force
-
-# Cache configuration
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
-
-# Optimize autoloader
-docker-compose exec app composer install --optimize-autoloader --no-dev
+# Create encrypted secrets file
+ansible-vault create group_vars/production/githubvoting_vault.yml
 ```
+
+Content of `githubvoting_vault.yml`:
+```yaml
+vault_githubvoting_db_password: "secure_password_here"
+vault_githubvoting_db_root_password: "secure_root_password_here"
+vault_githubvoting_admin_token: "secure_admin_token_here"
+vault_githubvoting_app_key: "base64:generated_laravel_key_here"
+```
+
+### 5. Generate Laravel App Key
+
+```bash
+# On your local machine or server
+docker compose up -d
+docker compose exec app php artisan key:generate --show
+```
+
+Copy the output (starts with `base64:`) to your Ansible vault.
+
+## How Docker Compose Override Works
+
+When you run `docker compose up`, Docker automatically:
+1. Loads `docker-compose.yml` (base config)
+2. Loads `docker-compose.override.yml` if it exists
+3. **Merges** both configurations
+4. Arrays (like `labels`) are **concatenated**
+5. Single values are **overridden**
+
+Example merge:
+```yaml
+# docker-compose.yml
+services:
+  app:
+    image: myapp
+    ports:
+      - "8080:80"
+
+# docker-compose.override.yml  
+services:
+  app:
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - traefik_network
+
+# Result after merge:
+services:
+  app:
+    image: myapp
+    ports:
+      - "8080:80"
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - traefik_network
+```
+
+## Advantages of This Approach
+
+✅ **Clean Separation**: Git doesn't know about Traefik  
+✅ **Flexible**: Easy to switch hosting methods  
+✅ **Secure**: All secrets in Ansible Vault  
+✅ **Standard**: Uses Docker Compose's built-in override mechanism  
+✅ **Simple**: No custom scripts needed  
+✅ **Local Dev Friendly**: Works without override file
+
+## Local Development
+
+For local development without Traefik:
+```bash
+docker compose up
+```
+
+The override file doesn't exist locally, so it's ignored automatically.
+
+---
+
+## Manual Production Deployment (Alternative)
+
+If you prefer manual deployment without Ansible:
 
 ### 4. Setup Nginx/Apache Reverse Proxy
 

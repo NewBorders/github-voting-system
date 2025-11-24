@@ -1,0 +1,25 @@
+# docker-compose.override.yml.example
+# This file shows the structure for production deployment with Traefik
+# The actual docker-compose.override.yml is managed by Ansible and should NOT be committed to git
+
+services:
+  app:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.githubvoting.rule=Host(`voting.example.com`)"
+      - "traefik.http.routers.githubvoting.entrypoints=websecure"
+      - "traefik.http.routers.githubvoting.tls.certresolver=le"
+      - "traefik.http.services.githubvoting.loadbalancer.server.port=80"
+    networks:
+      - traefik_network
+      - default
+
+  db:
+    # Production DB settings can be overridden here
+    environment:
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+
+networks:
+  traefik_network:
+    external: true
