@@ -32,13 +32,13 @@ COPY . .
 # Create required directories
 RUN mkdir -p bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
 
+# Set permissions BEFORE running composer
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
 # Generate optimized autoloader
 RUN composer dump-autoload --optimize
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
