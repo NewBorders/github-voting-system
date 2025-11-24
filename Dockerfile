@@ -40,6 +40,19 @@ RUN chown -R www-data:www-data /var/www/html \
 # Generate optimized autoloader
 RUN composer dump-autoload --optimize
 
+# Create entrypoint script
+RUN echo '#!/bin/sh\n\
+set -e\n\
+\n\
+# Fix permissions on mounted volumes\n\
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true\n\
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true\n\
+\n\
+# Execute CMD\n\
+exec "$@"' > /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
