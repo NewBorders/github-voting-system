@@ -6,19 +6,20 @@
     <title>@yield('title', 'Feature Voting')</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'dark-primary': '#06085a',
-                        'dark-secondary': '#0a0c7a',
-                        'dark-border': '#1a1c9a',
+                        'dark-primary': '#0f172a',
+                        'dark-secondary': '#1e293b',
+                        'dark-border': '#334155',
                         'accent': {
-                            DEFAULT: '#9333ea',
-                            light: '#a855f7',
-                            dark: '#7c3aed',
+                            DEFAULT: '#006891ff',
+                            light: '#00eeffff',
+                            dark: '#004c63ff',
                         }
                     }
                 }
@@ -27,10 +28,10 @@
     </script>
     <style>
         :root {
-            --color-dark-primary: #06085a;
-            --color-dark-secondary: #0a0c7a;
-            --color-dark-border: #1a1c9a;
-            --color-accent: #9333ea;
+            --color-dark-primary: #0f172a;
+            --color-dark-secondary: #1e293b;
+            --color-dark-border: #334155;
+            --color-accent: #0084acff;
         }
         
         body {
@@ -116,6 +117,10 @@
             background-color: #14532d;
             color: #bbf7d0;
             border-color: #22c55e;
+        }
+        
+        [x-cloak] {
+            display: none !important;
         }
         
         .badge-active {
