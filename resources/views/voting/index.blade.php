@@ -4,21 +4,21 @@
 
 @section('content')
 <div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">Vote for Features</h1>
-    <p class="text-lg text-gray-600">Help us prioritize what to build next by voting on features</p>
+    <h1 class="text-4xl font-bold text-white mb-4">Vote for Features</h1>
+    <p class="text-lg text-gray-300">Help us prioritize what to build next by voting on features</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($projects as $project)
         <a href="{{ route('voting.show', $project->slug) }}" 
-           class="block bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 border border-gray-200 hover:border-indigo-500">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $project->name }}</h3>
+           class="block card rounded-lg shadow hover:shadow-xl transition-shadow p-6">
+            <h3 class="text-xl font-bold text-white mb-2">{{ $project->name }}</h3>
             
             @if($project->description)
-                <p class="text-gray-600 mb-4 line-clamp-3">{{ $project->description }}</p>
+                <p class="text-gray-300 mb-4 line-clamp-3">{{ $project->description }}</p>
             @endif
             
-            <div class="flex items-center justify-between text-sm text-gray-500">
+            <div class="flex items-center justify-between text-sm text-gray-400">
                 <span class="flex items-center">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -38,7 +38,7 @@
         </a>
     @empty
         <div class="col-span-full text-center py-12">
-            <p class="text-gray-500 text-lg">No projects available for voting yet.</p>
+            <p class="text-gray-400 text-lg">No projects available for voting yet.</p>
         </div>
     @endforelse
 </div>

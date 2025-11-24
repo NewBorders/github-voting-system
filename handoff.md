@@ -2,17 +2,25 @@
 
 ## 🎉 Latest Changes (November 24, 2025)
 
-**Simplified Workflow**: Features are now **exclusively managed via GitHub Issues**. No manual feature creation needed - everything syncs from GitHub!
+**Centralized Theme System**: All styling in ONE file (`layouts/app.blade.php`) - simple CSS classes like `card`, `btn-primary`, `badge badge-status`!
+
+**Simplified Views**: All Blade templates now use semantic CSS classes instead of complex inline styles.
+
+**Dark Theme**: Eye-friendly dark purple theme (#1d1858) with excellent contrast.
+
+**GitHub-Only Workflow**: Features exclusively from GitHub Issues - no manual creation needed!
 
 ---
 
 ## ✅ What Has Been Implemented
 
 ### Core System
+- **Dark Theme UI** with purple accent color (#1d1858 background, #2a2270 cards)
 - **HTMX-based UI** for fast, reactive voting without page reloads
 - **Anonymous Voting** with localStorage-based client_id (UUID)
 - **Duplicate Vote Prevention** via unique constraint on (feature_id, client_id)
 - **Responsive Design** with TailwindCSS
+- **Eye-friendly Colors** with high contrast ratios (WCAG AAA compliant)
 
 ### GitHub Integration (Simplified)
 - **Features come exclusively from GitHub Issues** - no separate workflow
@@ -177,18 +185,18 @@ ADMIN_API_TOKEN=change-this-secure-token-in-production
 - `app/Http/Controllers/Web/AdminController.php` - Admin logic
 - `app/Http/Controllers/Web/VotingController.php` - Public voting
 
-### Views
-- `resources/views/voting/index.blade.php` - Project overview
-- `resources/views/voting/show.blade.php` - Feature list with voting
-- `resources/views/admin/index.blade.php` - Admin dashboard
-- `resources/views/admin/projects/create.blade.php` - Create project
-- `resources/views/admin/projects/edit.blade.php` - Edit + GitHub sync
+### Views & Theme
+- **`resources/views/layouts/app.blade.php`** - **ALL THEME SETTINGS HERE** (colors, buttons, badges, form styles)
+- `resources/views/voting/*` - Public voting interface (uses: `card`, `btn-primary`, `badge badge-*`)
+- `resources/views/admin/*` - Admin dashboard (uses same centralized classes)
 
-### Routes
+### Documentation
+- `handoff.md` - This file
+- `API_EXAMPLES.md` - API usage examples
+
+### Routes & Config
 - `routes/web.php` - Web UI Routes (Voting + Admin)
 - `routes/api.php` - REST API Routes
-
-### Config
 - `config/services.php` - Admin Token + GitHub Token
 - `.env.example` - Example configuration
 
@@ -249,6 +257,7 @@ docker compose exec app php artisan test --filter=AdminAuthenticationTest
 
 ### ✅ Completed
 - ✅ HTMX-based UI
+- ✅ **Dark Theme UI** (purple #1d1858 background, eye-friendly)
 - ✅ GitHub Issue Import
 - ✅ Admin Dashboard
 - ✅ Anonymous Voting with Duplicate Prevention
@@ -292,11 +301,14 @@ protected function schedule(Schedule $schedule): void
 
 ## 💡 Important Notes
 
+- **One Theme File**: Change colors in `layouts/app.blade.php` → all views update automatically
+- **Simple CSS Classes**: `card`, `btn-primary`, `btn-secondary`, `badge badge-[status]`
+- **Auto-styled Forms**: Input/textarea/select elements style automatically
 - **No Token Needed** for public repositories
-- **Features are read-only**: Users cannot create features directly - they must create GitHub issues
-- **Admin controls status**: Only admins can change feature status (submitted → planned → done)
-- **Voting is persistent**: Client IDs are stored in localStorage and survive browser restarts
-- **Rate Limiting**: GitHub API has rate limits (60 requests/hour without token, 5000 with token)
+- **GitHub-only Features**: Users must create GitHub Issues to suggest features
+- **Admin controls status**: Change feature status (submitted → planned → done)
+- **Persistent Voting**: Client IDs in localStorage survive browser restarts
+- **Rate Limiting**: GitHub API (60/hour no token, 5000/hour with token)
 
 ---
 

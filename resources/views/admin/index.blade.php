@@ -4,32 +4,31 @@
 
 @section('content')
 <div class="mb-8 flex justify-between items-center">
-    <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+    <h1 class="text-3xl font-bold text-white">Admin Dashboard</h1>
     <a href="{{ route('admin.projects.create') }}" 
-       class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 font-medium">
+       class="btn-primary px-4 py-2 rounded-md font-medium">
         + New Project
     </a>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     @forelse($projects as $project)
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="card rounded-lg shadow p-6">
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900">{{ $project->name }}</h3>
-                    <p class="text-sm text-gray-500">{{ $project->slug }}</p>
+                    <h3 class="text-xl font-bold text-white">{{ $project->name }}</h3>
+                    <p class="text-sm text-gray-400">{{ $project->slug }}</p>
                 </div>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                    {{ $project->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                <span class="badge badge-{{ $project->is_active ? 'active' : 'inactive' }}">
                     {{ $project->is_active ? 'Active' : 'Inactive' }}
                 </span>
             </div>
             
             @if($project->description)
-                <p class="text-gray-600 mb-4">{{ Str::limit($project->description, 150) }}</p>
+                <p class="text-gray-300 mb-4">{{ Str::limit($project->description, 150) }}</p>
             @endif
             
-            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+            <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
                 <span>{{ $project->features_count }} features</span>
                 
                 @if($project->github_repo)
@@ -44,7 +43,7 @@
             
             <div class="flex gap-2">
                 <a href="{{ route('admin.projects.edit', $project) }}" 
-                   class="flex-1 text-center bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-medium">
+                   class="flex-1 text-center btn-secondary px-4 py-2 rounded-md font-medium">
                     Edit
                 </a>
                 
@@ -52,23 +51,23 @@
                     <form action="{{ route('admin.projects.sync', $project) }}" method="POST" class="flex-1">
                         @csrf
                         <button type="submit" 
-                                class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 font-medium">
+                                class="w-full btn-primary px-4 py-2 rounded-md font-medium">
                             Sync GitHub
                         </button>
                     </form>
                 @endif
                 
                 <a href="{{ route('admin.features', $project) }}" 
-                   class="flex-1 text-center bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 font-medium">
+                   class="flex-1 text-center btn-secondary px-4 py-2 rounded-md font-medium">
                     Features
                 </a>
             </div>
         </div>
     @empty
-        <div class="col-span-full text-center py-12 bg-white rounded-lg shadow">
-            <p class="text-gray-500 mb-4">No projects yet.</p>
+        <div class="col-span-full text-center py-12 card rounded-lg shadow">
+            <p class="text-gray-300 mb-4">No projects yet.</p>
             <a href="{{ route('admin.projects.create') }}" 
-               class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 font-medium">
+               class="inline-block btn-primary px-6 py-3 rounded-md font-medium">
                 Create Your First Project
             </a>
         </div>
