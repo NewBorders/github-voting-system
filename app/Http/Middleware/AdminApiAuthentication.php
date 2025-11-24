@@ -20,17 +20,31 @@ class AdminApiAuthentication
         $expectedToken = config('services.admin.api_token');
 
         if (empty($expectedToken)) {
-            return response()->json([
-                'message' => 'Admin API token not configured',
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Admin API token not configured',
+                ], 500);
+            }
+            abort(500, 'Admin API token not configured');
         }
 
-        $providedToken = $request->header('X-Admin-Token');
+        // Check for token in header (API) or session (Web UI)
+        $providedToken = $request->header('X-Admin-Token') ?? $request->session()->get('admin_token');
+
+        // For web requests, also check cookie
+        if (!$providedToken && $request->hasCookie('admin_token')) {
+            $providedToken = $request->cookie('admin_token');
+        }
 
         if (empty($providedToken) || !hash_equals($expectedToken, $providedToken)) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 401);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
+            
+            // For web UI, redirect to login
+            return redirect()->route('admin.login')->with('error', 'Please authenticate to access admin panel');
         }
 
         return $next($request);
