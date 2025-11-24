@@ -12,9 +12,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'dark-primary': '#1d1858',
-                        'dark-secondary': '#2a2270',
-                        'dark-border': '#4a3f9a',
+                        'dark-primary': '#06085a',
+                        'dark-secondary': '#0a0c7a',
+                        'dark-border': '#1a1c9a',
                         'accent': {
                             DEFAULT: '#9333ea',
                             light: '#a855f7',
@@ -27,9 +27,9 @@
     </script>
     <style>
         :root {
-            --color-dark-primary: #1d1858;
-            --color-dark-secondary: #2a2270;
-            --color-dark-border: #4a3f9a;
+            --color-dark-primary: #06085a;
+            --color-dark-secondary: #0a0c7a;
+            --color-dark-border: #1a1c9a;
             --color-accent: #9333ea;
         }
         

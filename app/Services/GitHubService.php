@@ -70,8 +70,21 @@ class GitHubService
             // Update last sync time
             $project->update(['github_last_sync' => now()]);
 
+            $message = "Synced {$synced} issues";
+            if ($created > 0) {
+                $message .= " ({$created} created";
+                if ($updated > 0) {
+                    $message .= ", {$updated} updated)";
+                } else {
+                    $message .= ")";
+                }
+            } elseif ($updated > 0) {
+                $message .= " ({$updated} updated)";
+            }
+
             return [
                 'success' => true,
+                'message' => $message,
                 'synced' => $synced,
                 'created' => $created,
                 'updated' => $updated,
