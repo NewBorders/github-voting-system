@@ -25,7 +25,7 @@ class Project extends Model
         'is_active',
         'github_owner',
         'github_repo',
-        'github_sync_enabled',
+        'github_token',
         'github_last_sync',
         'github_sync_config',
     ];
@@ -37,9 +37,17 @@ class Project extends Model
      */
     protected $casts = [
         'is_active' => 'boolean',
-        'github_sync_enabled' => 'boolean',
         'github_last_sync' => 'datetime',
         'github_sync_config' => 'array',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'github_token',
     ];
 
     /**

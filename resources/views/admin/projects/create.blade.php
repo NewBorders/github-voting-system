@@ -87,20 +87,9 @@
                    id="github_token" 
                    name="github_token" 
                    value="{{ old('github_token') }}"
+                   placeholder="Optional - nur für private Repositories"
                    class="w-full px-4 py-2 rounded-md">
-            <p class="mt-1 text-sm text-gray-400">Only needed for private repositories. Public repos work without token.</p>
-        </div>
-        
-        <div class="flex items-center">
-            <input type="checkbox" 
-                   id="auto_sync" 
-                   name="auto_sync" 
-                   value="1"
-                   {{ old('auto_sync') ? 'checked' : '' }}
-                   class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-purple-600 rounded bg-[#1d1858]">
-            <label for="auto_sync" class="ml-2 block text-sm text-gray-300">
-                Auto-sync GitHub issues (not implemented yet)
-            </label>
+            <p class="mt-1 text-sm text-gray-400">Nur erforderlich für private Repositories. Public Repos funktionieren ohne Token.</p>
         </div>
         
         <hr class="border-purple-700">

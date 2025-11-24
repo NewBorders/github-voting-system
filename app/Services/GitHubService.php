@@ -16,12 +16,16 @@ class GitHubService
      */
     public function syncIssues(Project $project): array
     {
-        if (!$project->github_sync_enabled || !$project->github_owner || !$project->github_repo) {
-            return ['success' => false, 'message' => 'GitHub sync not configured'];
+        if (!$project->github_owner || !$project->github_repo) {
+            return ['success' => false, 'message' => 'GitHub repository not configured'];
         }
 
         try {
-            $issues = $this->fetchOpenIssues($project->github_owner, $project->github_repo);
+            $issues = $this->fetchOpenIssues(
+                $project->github_owner, 
+                $project->github_repo,
+                $project->github_token
+            );
             
             $synced = 0;
             $created = 0;
@@ -89,14 +93,21 @@ class GitHubService
     /**
      * Fetch open issues from GitHub.
      */
-    protected function fetchOpenIssues(string $owner, string $repo): array
+    protected function fetchOpenIssues(string $owner, string $repo, ?string $token = null): array
     {
         $url = "https://api.github.com/repos/{$owner}/{$repo}/issues";
         
-        $response = Http::withHeaders([
+        $headers = [
             'Accept' => 'application/vnd.github.v3+json',
             'User-Agent' => 'Feature-Voting-Backend',
-        ])->get($url, [
+        ];
+        
+        // Add authorization header if token is provided
+        if ($token) {
+            $headers['Authorization'] = "Bearer {$token}";
+        }
+        
+        $response = Http::withHeaders($headers)->get($url, [
             'state' => 'open',
             'per_page' => 100,
         ]);

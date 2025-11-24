@@ -2,9 +2,9 @@
 
 ## 🎉 Latest Changes (November 24, 2025)
 
-**Centralized Theme System**: All styling in ONE file (`layouts/app.blade.php`) - simple CSS classes like `card`, `btn-primary`, `badge badge-status`!
+**GitHub Token Removed**: The system now works EXCLUSIVELY with public GitHub repos WITHOUT any authentication token. Private repo support has been removed.
 
-**Simplified Views**: All Blade templates now use semantic CSS classes instead of complex inline styles.
+**Simplified Views**: All Blade templates use semantic CSS classes (`card`, `btn-primary`, `badge badge-status`) defined in ONE central file.
 
 **Dark Theme**: Eye-friendly dark purple theme (#1d1858) with excellent contrast.
 

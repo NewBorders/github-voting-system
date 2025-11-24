@@ -75,25 +75,14 @@
                 </div>
                 
                 <div>
-                    <label for="github_token" class="block text-sm font-medium text-gray-300 mb-1">GitHub Token</label>
+                    <label for="github_token" class="block text-sm font-medium text-gray-300 mb-1">GitHub Token (optional)</label>
                     <input type="password" 
                            id="github_token" 
                            name="github_token" 
                            value="{{ old('github_token', $project->github_token) }}"
-                           placeholder="Leave empty to keep current token"
+                           placeholder="Optional - nur für private Repositories"
                            class="w-full px-4 py-2 rounded-md">
-                </div>
-                
-                <div class="flex items-center">
-                    <input type="checkbox" 
-                           id="auto_sync" 
-                           name="auto_sync" 
-                           value="1"
-                           {{ old('auto_sync', $project->auto_sync) ? 'checked' : '' }}
-                           class="h-4 w-4 text-purple-400 focus:ring-2 focus:ring-purple-500 border-purple-600 rounded">
-                    <label for="auto_sync" class="ml-2 block text-sm text-gray-300">
-                        Auto-sync GitHub issues
-                    </label>
+                    <p class="mt-1 text-sm text-gray-400">Nur erforderlich für private Repositories. Leer lassen um aktuellen Token zu behalten.</p>
                 </div>
                 
                 <hr>

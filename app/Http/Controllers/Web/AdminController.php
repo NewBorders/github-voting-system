@@ -84,8 +84,7 @@ class AdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'github_owner' => 'required|string|max:191',
             'github_repo' => 'required|string|max:191',
-            'github_token' => 'nullable|string|max:191',
-            'auto_sync' => 'boolean',
+            'github_token' => 'nullable|string|max:500',
             'is_active' => 'boolean',
         ]);
 
@@ -120,8 +119,7 @@ class AdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'github_owner' => 'nullable|string|max:191',
             'github_repo' => 'nullable|string|max:191',
-            'github_token' => 'nullable|string|max:191',
-            'auto_sync' => 'boolean',
+            'github_token' => 'nullable|string|max:500',
             'is_active' => 'boolean',
         ]);
 
