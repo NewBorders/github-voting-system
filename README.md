@@ -39,42 +39,37 @@ Anonymous upvotes on features. Uses client-side generated UUIDs to prevent dupli
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   cd githubvoting
-   ```
-
-2. **Copy environment file**
+1. **Copy environment file**
    ```bash
    cp .env.example .env
    ```
 
-3. **Update the admin token in `.env`**
+2. **Update the admin token in `.env`**
    ```bash
    ADMIN_API_TOKEN=your-secure-random-token-here
    ```
 
-4. **Build and start containers**
+3. **Build and start containers**
    ```bash
    docker-compose up -d --build
    ```
 
-5. **Install dependencies**
+4. **Install dependencies**
    ```bash
    docker-compose exec app composer install
    ```
 
-6. **Generate application key**
+5. **Generate application key into .env**
    ```bash
    docker-compose exec app php artisan key:generate
    ```
 
-7. **Run migrations**
+6. **Run migrations**
    ```bash
    docker-compose exec app php artisan migrate
    ```
 
-8. **Seed database with sample data (optional)**
+7. **Seed database with sample data (optional)**
    ```bash
    docker-compose exec app php artisan db:seed
    ```
