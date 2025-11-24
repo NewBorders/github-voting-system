@@ -23,6 +23,11 @@ class Project extends Model
         'slug',
         'description',
         'is_active',
+        'github_owner',
+        'github_repo',
+        'github_sync_enabled',
+        'github_last_sync',
+        'github_sync_config',
     ];
 
     /**
@@ -32,6 +37,9 @@ class Project extends Model
      */
     protected $casts = [
         'is_active' => 'boolean',
+        'github_sync_enabled' => 'boolean',
+        'github_last_sync' => 'datetime',
+        'github_sync_config' => 'array',
     ];
 
     /**

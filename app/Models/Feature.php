@@ -27,6 +27,9 @@ class Feature extends Model
         'status',
         'vote_count',
         'meta',
+        'github_issue_number',
+        'github_issue_url',
+        'github_synced_at',
     ];
 
     /**
@@ -37,6 +40,7 @@ class Feature extends Model
     protected $casts = [
         'vote_count' => 'integer',
         'meta' => 'array',
+        'github_synced_at' => 'datetime',
     ];
 
     /**
