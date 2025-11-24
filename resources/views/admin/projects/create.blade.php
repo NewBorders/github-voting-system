@@ -54,26 +54,29 @@
         
         <hr>
         
-        <h3 class="text-lg font-bold text-gray-900">GitHub Integration</h3>
+        <h3 class="text-lg font-bold text-gray-900">GitHub Integration (Required)</h3>
+        <p class="text-sm text-gray-600 mb-4">Features are only synced from GitHub Issues</p>
         
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label for="github_owner" class="block text-sm font-medium text-gray-700 mb-1">GitHub Owner</label>
+                <label for="github_owner" class="block text-sm font-medium text-gray-700 mb-1">GitHub Owner *</label>
                 <input type="text" 
                        id="github_owner" 
                        name="github_owner" 
+                       required
                        value="{{ old('github_owner') }}"
-                       placeholder="octocat"
+                       placeholder="e.g., facebook"
                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
             </div>
             
             <div>
-                <label for="github_repo" class="block text-sm font-medium text-gray-700 mb-1">Repository Name</label>
+                <label for="github_repo" class="block text-sm font-medium text-gray-700 mb-1">Repository Name *</label>
                 <input type="text" 
                        id="github_repo" 
                        name="github_repo" 
+                       required
                        value="{{ old('github_repo') }}"
-                       placeholder="hello-world"
+                       placeholder="e.g., react"
                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
             </div>
         </div>
@@ -85,7 +88,7 @@
                    name="github_token" 
                    value="{{ old('github_token') }}"
                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-            <p class="mt-1 text-sm text-gray-500">For private repositories or higher rate limits</p>
+            <p class="mt-1 text-sm text-gray-500">Only needed for private repositories. Public repos work without token.</p>
         </div>
         
         <div class="flex items-center">

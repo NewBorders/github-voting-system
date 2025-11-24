@@ -43,34 +43,6 @@ class VotingController extends Controller
     }
 
     /**
-     * Submit a new feature (HTMX).
-     */
-    public function submitFeature(Request $request, Project $project)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|min:5|max:200',
-            'description' => 'nullable|string|max:5000',
-            'client_id' => 'required|string|min:5|max:100',
-        ]);
-
-        $feature = $project->features()->create([
-            'title' => $validated['title'],
-            'description' => $validated['description'] ?? null,
-            'status' => 'submitted',
-        ]);
-
-        // Add initial vote
-        $feature->addVote($validated['client_id']);
-
-        if ($request->header('HX-Request')) {
-            return view('voting.partials.feature-item', compact('feature', 'project'))
-                ->with('success', 'Feature submitted successfully!');
-        }
-
-        return redirect()->route('voting.show', $project);
-    }
-
-    /**
      * Vote for a feature (HTMX).
      */
     public function vote(Request $request, Feature $feature)

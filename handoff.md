@@ -1,137 +1,160 @@
 # Feature Voting System - Handoff Document
 
-## 🎉 Was wurde umgesetzt
+## 🎉 Latest Changes (November 24, 2025)
 
-### ✅ Vollständiges Voting-System mit UI
-- **HTMX-basierte UI** für schnelles, reaktives Voting ohne Page Reload
-- **Anonymes Voting** mit localStorage-basierter client_id (UUID)
-- **Duplicate Vote Prevention** durch unique constraint auf (feature_id, client_id)
-- **Responsive Design** mit TailwindCSS
-
-### ✅ GitHub Integration
-- **Automatischer Issue-Import** aus öffentlichen und privaten GitHub-Repositories
-- **Issue-zu-Feature-Sync** mit Tracking von GitHub Issue Numbers
-- **Manual Sync Button** im Admin-Panel
-- **GitHub Token Support** für private Repos und höhere Rate Limits
-
-### ✅ Admin Dashboard
-- **Token-basierte Authentifizierung** (Session + Cookie)
-- **Projekt-Management**: Erstellen, Bearbeiten, Aktivieren/Deaktivieren
-- **Feature-Management**: Status ändern (submitted → planned → in_progress → done)
-- **GitHub-Konfiguration** pro Projekt
-- **Statistiken**: Feature-Count, Vote-Count, etc.
-
-### ✅ Public Voting Interface
-- **Projekt-Übersicht** mit allen aktiven Projekten
-- **Feature-Liste** sortiert nach Votes (Top voted zuerst)
-- **Feature einreichen** direkt über die UI
-- **Upvote/Unvote** mit sofortiger Aktualisierung (HTMX)
-- **GitHub Issue Links** sichtbar bei synchronisierten Features
+**Simplified Workflow**: Features are now **exclusively managed via GitHub Issues**. No manual feature creation needed - everything syncs from GitHub!
 
 ---
 
-## 🚀 Wie starte ich das System?
+## ✅ What Has Been Implemented
 
-### 1. Docker Container starten
+### Core System
+- **HTMX-based UI** for fast, reactive voting without page reloads
+- **Anonymous Voting** with localStorage-based client_id (UUID)
+- **Duplicate Vote Prevention** via unique constraint on (feature_id, client_id)
+- **Responsive Design** with TailwindCSS
+
+### GitHub Integration (Simplified)
+- **Features come exclusively from GitHub Issues** - no separate workflow
+- **Automatic Issue Import** from GitHub repositories
+- **No Token Required** for public repos (works out of the box)
+- **Manual Sync Button** in Admin Panel
+- **Issue Tracking**: GitHub issue numbers and URLs are stored with each feature
+
+### Admin Dashboard
+- **Token-based Authentication** (Session + Cookie)
+- **Project Management**: Create, Edit, Activate/Deactivate
+- **GitHub Configuration**: Owner + Repo **required** for all projects
+- **Feature Management**: Change status (submitted → planned → in_progress → done)
+- **One-Click Sync**: Import all open issues with a single button
+
+### Public Voting Interface
+- **Project Overview** with all active projects
+- **Feature List** sorted by votes (top voted first)
+- **Direct GitHub Link**: Users are redirected to GitHub to create new issues
+- **Upvote/Unvote** with immediate HTMX updates
+- **GitHub Issue Links** visible on all synced features
+
+---
+
+## 🚀 Quick Start
+
+### 1. Start Docker Containers
 ```bash
 docker compose up -d
 ```
 
-### 2. Dependencies installieren (falls noch nicht geschehen)
+### 2. Install Dependencies (if needed)
 ```bash
 docker compose exec app composer install
 ```
 
-### 3. .env Datei konfigurieren
+### 3. Configure Environment
 ```bash
-# Falls noch nicht vorhanden:
+# Copy .env if not exists
 cp .env.example .env
 
-# APP_KEY generieren:
+# Generate APP_KEY
 docker compose exec app php artisan key:generate
 
-# Admin-Token setzen:
-# Bearbeite .env und setze ADMIN_API_TOKEN=dein-sicheres-token
+# Set admin token in .env
+# ADMIN_API_TOKEN=your-secure-token-here
 ```
 
-### 4. Datenbank migrieren
+### 4. Run Migrations
 ```bash
 docker compose exec app php artisan migrate
 
-# Optional: Beispieldaten laden
+# Optional: Load sample data
 docker compose exec app php artisan db:seed
 ```
 
-### 5. Zugriff
+### 5. Access
 - **Public Voting UI**: http://localhost:8080
 - **Admin Login**: http://localhost:8080/admin/login
 - **API**: http://localhost:8080/api/v1
 
 ---
 
-## 🔑 Admin-Zugang
+## 🔑 Admin Access
 
-1. Gehe zu http://localhost:8080/admin/login
-2. Gib deinen `ADMIN_API_TOKEN` aus der `.env` ein
-3. Du wirst in das Admin-Dashboard weitergeleitet
+1. Go to http://localhost:8080/admin/login
+2. Enter your `ADMIN_API_TOKEN` from `.env`
+3. You'll be redirected to the Admin Dashboard
 
-**Standard-Token** (in `.env.example`):
+**Default Token** (from `.env.example`):
 ```
 ADMIN_API_TOKEN=change-this-secure-token-in-production
 ```
 
 ---
 
-## 🐙 GitHub Integration einrichten
+## 🐙 GitHub Integration Setup
 
-### Option 1: Öffentliche Repositories (kein Token nötig)
-1. Gehe zu **Admin → Projekt erstellen**
-2. Fülle die Projekt-Details aus
-3. Setze:
-   - `GitHub Owner`: z.B. `facebook`
-   - `Repository Name`: z.B. `react`
-4. Speichere und klicke auf **Sync GitHub**
+### Example: Public Repository (No Token Needed)
 
-### Option 2: Private Repositories oder höhere Rate Limits
-1. Erstelle einen GitHub Personal Access Token:
-   - Gehe zu https://github.com/settings/tokens
-   - Klicke **Generate new token (classic)**
-   - Wähle Scopes: `repo` (für private Repos) oder nur `public_repo`
-   - Kopiere den Token
+**Test Repository**: `NewBorders/galactic-tycoon-calculator`
 
-2. **Pro-Projekt-Token** (empfohlen):
-   - Füge den Token beim Projekt unter "GitHub Token" ein
+1. Go to **Admin → Create Project**
+2. Fill in:
+   - **Name**: Galactic Tycoon Calculator
+   - **Slug**: galactic-tycoon-calculator
+   - **GitHub Owner**: NewBorders
+   - **Repository Name**: galactic-tycoon-calculator
+   - **GitHub Token**: (leave empty for public repos)
+3. Click **Create Project**
+4. System automatically syncs all open issues
+5. Users can now vote on the imported features!
+
+### For Private Repositories
+
+1. Create a GitHub Personal Access Token:
+   - Go to https://github.com/settings/tokens
+   - Click **Generate new token (classic)**
+   - Select scopes: `repo` (for private repos)
+   - Copy the token
+
+2. **Per-Project Token** (recommended):
+   - Add token when creating/editing the project
    
-3. **Globaler Token** (für alle Projekte):
-   - Setze in `.env`: `GITHUB_TOKEN=dein-token`
+3. **Global Token** (for all projects):
+   - Set in `.env`: `GITHUB_TOKEN=your-token`
 
 ---
 
 ## 📊 Workflows
 
-### User-Story: Anonymer Nutzer votet
-1. User besucht http://localhost:8080
-2. Wählt ein Projekt aus
-3. Sieht Feature-Liste (Top-Voted zuerst)
-4. Klickt Upvote-Button → Vote wird gespeichert, client_id in localStorage
-5. Kann Vote jederzeit zurückziehen
+### User Story: Anonymous User Votes
+1. User visits http://localhost:8080
+2. Selects a project
+3. Sees feature list (top voted first)
+4. Clicks upvote button → Vote is saved, client_id stored in localStorage
+5. Can remove vote anytime by clicking again
 
-### Admin-Story: GitHub Issues importieren
-1. Admin loggt sich ein
-2. Erstellt neues Projekt mit GitHub-Konfiguration
-3. Klickt "Sync GitHub"
-4. Issues werden als Features importiert
-5. Admin kann Status ändern (submitted → planned → done)
-6. Community sieht Features und votet
+### User Story: Suggesting New Features
+1. User goes to project page
+2. Clicks "Create GitHub Issue" button
+3. Gets redirected to GitHub to create an issue
+4. Admin syncs issues in Admin Panel
+5. New issue appears as votable feature
+
+### Admin Story: Import GitHub Issues
+1. Admin logs in
+2. Creates new project with GitHub configuration
+3. System auto-syncs issues on project creation
+4. Admin can manually re-sync anytime with "Sync GitHub" button
+5. Admin can change feature status (planned, in_progress, done)
+6. Community sees features and votes
 
 ---
 
-## 🗂️ Datenbank-Schema
+## 🗂️ Database Schema
 
 ### projects
 - `id`, `name`, `slug` (unique)
 - `description`, `is_active`
-- `github_owner`, `github_repo`, `github_token`, `auto_sync`
+- `github_owner` (**required**), `github_repo` (**required**)
+- `github_token` (optional), `auto_sync`
 
 ### features
 - `id`, `project_id` (FK)
@@ -145,106 +168,21 @@ ADMIN_API_TOKEN=change-this-secure-token-in-production
 
 ---
 
-## 🎨 UI-Komponenten
-
-### Public Views
-- `voting/index.blade.php` - Projekt-Übersicht
-- `voting/show.blade.php` - Feature-Liste mit Vote-UI
-- `voting/partials/feature-item.blade.php` - Einzelnes Feature
-- `voting/partials/vote-button.blade.php` - Vote-Button (HTMX)
-
-### Admin Views
-- `admin/login.blade.php` - Login-Formular
-- `admin/index.blade.php` - Dashboard mit allen Projekten
-- `admin/projects/create.blade.php` - Projekt erstellen
-- `admin/projects/edit.blade.php` - Projekt bearbeiten + GitHub-Sync
-- `admin/features.blade.php` - Feature-Management-Tabelle
-
-### Layout
-- `layouts/app.blade.php` - Haupt-Layout mit HTMX + TailwindCSS
-
----
-
-## 🔧 API Endpoints (weiterhin verfügbar)
-
-### Public API
-- `GET /api/v1/projects` - Liste aller Projekte
-- `GET /api/v1/projects/{slug}/features` - Features eines Projekts
-- `POST /api/v1/projects/{slug}/features` - Feature einreichen
-- `POST /api/v1/features/{id}/vote` - Vote abgeben
-- `DELETE /api/v1/features/{id}/vote` - Vote zurückziehen
-
-### Admin API (Token in Header: `X-Admin-Token`)
-- `POST /api/v1/admin/projects` - Projekt erstellen
-- `PATCH /api/v1/admin/projects/{id}` - Projekt aktualisieren
-- `PATCH /api/v1/admin/features/{id}` - Feature-Status ändern
-- `DELETE /api/v1/admin/features/{id}` - Feature löschen
-- `GET /api/v1/admin/stats` - Statistiken
-
----
-
-## 🧪 Testing
-
-### Manuelle Tests
-```bash
-# Feature erstellen (Web UI)
-# 1. Gehe zu http://localhost:8080/vote/test-project
-# 2. Fülle Formular aus
-# 3. Submit → Feature wird oben in Liste eingefügt (HTMX)
-
-# Vote abgeben
-# 1. Klicke Upvote-Button
-# 2. Button wird blau/gefüllt (voted state)
-# 3. Vote-Count erhöht sich
-
-# Admin: GitHub Sync
-# 1. Login als Admin
-# 2. Erstelle Projekt mit GitHub-Repo
-# 3. Klicke "Sync GitHub"
-# 4. Issues werden als Features importiert
-```
-
-### Automated Tests
-```bash
-# Tests ausführen
-docker compose exec app php artisan test
-
-# Spezifische Tests
-docker compose exec app php artisan test --filter=VotingTest
-docker compose exec app php artisan test --filter=AdminAuthenticationTest
-```
-
----
-
-## 🐛 Known Limitations & TODOs
-
-### ✅ Fertig
-- ✅ HTMX-basierte UI
-- ✅ GitHub Issue Import
-- ✅ Admin Dashboard
-- ✅ Anonymes Voting mit Duplicate Prevention
-
-### 🔄 Noch nicht implementiert (Nice-to-have)
-- ⏳ **Auto-Sync** (Scheduled Job für regelmäßigen GitHub-Sync)
-- ⏳ **Webhook Support** (GitHub Webhook für automatische Updates)
-- ⏳ **Email Notifications** (Admin benachrichtigen bei neuen Features)
-- ⏳ **Feature Comments** (Diskussion zu Features)
-- ⏳ **Tags/Labels** von GitHub Issues übernehmen
-
----
-
-## 📝 Wichtige Dateien
+## 🎨 Key Files
 
 ### Backend Core
-- `app/Models/Project.php` - Project Model mit GitHub-Feldern
-- `app/Models/Feature.php` - Feature Model mit Vote-Logic
+- `app/Models/Project.php` - Project Model with GitHub fields
+- `app/Models/Feature.php` - Feature Model with voting logic
 - `app/Services/GitHubService.php` - GitHub API Integration
-- `app/Http/Controllers/Web/AdminController.php` - Admin-Logik
-- `app/Http/Controllers/Web/VotingController.php` - Public Voting
+- `app/Http/Controllers/Web/AdminController.php` - Admin logic
+- `app/Http/Controllers/Web/VotingController.php` - Public voting
 
-### Migrations
-- `database/migrations/*_add_github_fields_to_projects.php`
-- `database/migrations/*_add_github_fields_to_features.php`
+### Views
+- `resources/views/voting/index.blade.php` - Project overview
+- `resources/views/voting/show.blade.php` - Feature list with voting
+- `resources/views/admin/index.blade.php` - Admin dashboard
+- `resources/views/admin/projects/create.blade.php` - Create project
+- `resources/views/admin/projects/edit.blade.php` - Edit + GitHub sync
 
 ### Routes
 - `routes/web.php` - Web UI Routes (Voting + Admin)
@@ -252,19 +190,88 @@ docker compose exec app php artisan test --filter=AdminAuthenticationTest
 
 ### Config
 - `config/services.php` - Admin Token + GitHub Token
-- `.env.example` - Beispiel-Konfiguration
+- `.env.example` - Example configuration
 
 ---
 
-## 🎯 Nächste Schritte
+## 🔧 API Endpoints (Still Available)
+
+### Public API
+- `GET /api/v1/projects` - List all projects
+- `GET /api/v1/projects/{slug}/features` - Features of a project
+- `POST /api/v1/features/{id}/vote` - Cast a vote
+- `DELETE /api/v1/features/{id}/vote` - Remove vote
+
+### Admin API (Token in Header: `X-Admin-Token`)
+- `POST /api/v1/admin/projects` - Create project
+- `PATCH /api/v1/admin/projects/{id}` - Update project
+- `PATCH /api/v1/admin/features/{id}` - Change feature status
+- `DELETE /api/v1/admin/features/{id}` - Delete feature
+- `GET /api/v1/admin/stats` - Statistics
+
+---
+
+## 🧪 Testing
+
+### Manual Test Flow
+
+```bash
+# 1. Create project via Admin UI
+# - Login at http://localhost:8080/admin/login
+# - Create project with GitHub repo
+# - System auto-syncs issues
+
+# 2. Vote on features
+# - Go to http://localhost:8080
+# - Click on a project
+# - Upvote features
+# - Check that vote count increases
+
+# 3. GitHub Issue → Feature
+# - Create new issue on GitHub
+# - Click "Sync GitHub" in Admin Panel
+# - New issue appears as feature
+```
+
+### Automated Tests
+```bash
+# Run all tests
+docker compose exec app php artisan test
+
+# Specific tests
+docker compose exec app php artisan test --filter=VotingTest
+docker compose exec app php artisan test --filter=AdminAuthenticationTest
+```
+
+---
+
+## 🐛 Known Limitations & Future Ideas
+
+### ✅ Completed
+- ✅ HTMX-based UI
+- ✅ GitHub Issue Import
+- ✅ Admin Dashboard
+- ✅ Anonymous Voting with Duplicate Prevention
+- ✅ Simplified workflow (GitHub Issues only)
+
+### 🔄 Not Yet Implemented (Nice-to-have)
+- ⏳ **Auto-Sync** (Scheduled job for regular GitHub sync)
+- ⏳ **Webhook Support** (GitHub webhook for automatic updates)
+- ⏳ **Email Notifications** (Notify admin on new features)
+- ⏳ **Feature Comments** (Discussion threads)
+- ⏳ **GitHub Labels**: Import tags/labels from issues
+
+---
+
+## 🎯 Next Steps
 
 ### Production Deployment
-1. Ändere `ADMIN_API_TOKEN` zu einem sicheren Wert
-2. Setze `APP_DEBUG=false` und `APP_ENV=production`
-3. Konfiguriere Nginx/Caddy Reverse Proxy mit SSL
-4. Optional: GitHub Token für alle Projekte in `GITHUB_TOKEN` setzen
+1. Change `ADMIN_API_TOKEN` to a secure value
+2. Set `APP_DEBUG=false` and `APP_ENV=production`
+3. Configure Nginx/Caddy reverse proxy with SSL
+4. Optional: Set `GITHUB_TOKEN` for all projects
 
-### Auto-Sync (optional)
+### Enable Auto-Sync (Optional)
 ```php
 // In app/Console/Kernel.php:
 protected function schedule(Schedule $schedule): void
@@ -283,14 +290,16 @@ protected function schedule(Schedule $schedule): void
 
 ---
 
-## 🙋 Fragen & Support
+## 💡 Important Notes
 
-- **Dokumentation**: Siehe `README.md`, `API_EXAMPLES.md`, `DEPLOYMENT.md`
-- **Admin-Token vergessen?**: Schau in `.env` unter `ADMIN_API_TOKEN`
-- **GitHub-Sync funktioniert nicht?**: Prüfe Token-Berechtigung und Rate Limits
+- **No Token Needed** for public repositories
+- **Features are read-only**: Users cannot create features directly - they must create GitHub issues
+- **Admin controls status**: Only admins can change feature status (submitted → planned → done)
+- **Voting is persistent**: Client IDs are stored in localStorage and survive browser restarts
+- **Rate Limiting**: GitHub API has rate limits (60 requests/hour without token, 5000 with token)
 
 ---
 
-**Datum**: November 24, 2025  
-**Status**: ✅ Vollständig funktionsfähig  
-**Version**: 1.0.0 mit UI + GitHub Integration
+**Date**: November 24, 2025  
+**Status**: ✅ Fully Functional  
+**Version**: 1.0.0 with UI + Simplified GitHub Integration

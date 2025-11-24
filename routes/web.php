@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Route;
 // Public Voting Routes
 Route::get('/', [VotingController::class, 'index'])->name('voting.index');
 Route::get('/vote/{project:slug}', [VotingController::class, 'show'])->name('voting.show');
-Route::post('/vote/{project:slug}/submit', [VotingController::class, 'submitFeature'])->name('voting.submit');
 Route::post('/vote/feature/{feature}/vote', [VotingController::class, 'vote'])->name('voting.vote');
 Route::delete('/vote/feature/{feature}/vote', [VotingController::class, 'unvote'])->name('voting.unvote');
 

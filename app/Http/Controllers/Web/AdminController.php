@@ -82,8 +82,8 @@ class AdminController extends Controller
             'name' => 'required|string|max:191',
             'slug' => 'required|string|max:191|unique:projects,slug',
             'description' => 'nullable|string|max:5000',
-            'github_owner' => 'nullable|string|max:191',
-            'github_repo' => 'nullable|string|max:191',
+            'github_owner' => 'required|string|max:191',
+            'github_repo' => 'required|string|max:191',
             'github_token' => 'nullable|string|max:191',
             'auto_sync' => 'boolean',
             'is_active' => 'boolean',
@@ -91,8 +91,13 @@ class AdminController extends Controller
 
         $project = Project::create($validated);
 
+        // Auto-sync issues after creation
+        if ($project->github_repo && $project->github_owner) {
+            $this->githubService->syncIssues($project);
+        }
+
         return redirect()->route('admin.projects.edit', $project)
-            ->with('success', 'Project created successfully');
+            ->with('success', 'Project created and GitHub issues synced');
     }
 
     /**
