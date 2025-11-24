@@ -4,6 +4,7 @@
 * Always create/update a document handoff.md in the root project directory, which contains a (brief) summary of what we've most recently worked on.
   The goal is that if the context window gets too crowded, we can restart with a new task, 
   and the new agent can pick up where you left off using the handoff document (describing what we were most recently working on).
+  **Important: handoff.md must always be written in English.**
 * Work doggedly. Your goal is to be autonomous as long as possible.
   If you know the user's overall goal, and there is still progress you can make towards that goal,
   continue working until you can no longer make progress.
