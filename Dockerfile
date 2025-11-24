@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -52,6 +52,9 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || 
 exec "$@"' > /usr/local/bin/docker-entrypoint.sh \
     && chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# php-fpm so konfigurieren, dass er auf 0.0.0.0:9000 lauscht
+RUN sed -ri 's|^listen\s*=.*$|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/www.conf \
+ && sed -ri 's|^listen\s*=.*$|listen = 0.0.0.0:9000|' /usr/local/etc/php-fpm.d/zz-docker.conf
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

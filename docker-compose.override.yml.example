@@ -3,23 +3,48 @@
 # The actual docker-compose.override.yml is managed by Ansible and should NOT be committed to git
 
 services:
-  app:
+  web:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.githubvoting.rule=Host(`voting.example.com`)"
+      - "traefik.http.routers.githubvoting.rule=Host(`{{ githubvoting.host }}`)"
       - "traefik.http.routers.githubvoting.entrypoints=websecure"
       - "traefik.http.routers.githubvoting.tls.certresolver=le"
       - "traefik.http.services.githubvoting.loadbalancer.server.port=80"
     networks:
-      - traefik_network
-      - default
+      - proxy
+      - voting_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - proxy
+      - voting_network
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
-    # Production DB settings can be overridden here
     environment:
-      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
-      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_DATABASE: "{{ githubvoting.db_name }}"
+      MYSQL_USER: "{{ githubvoting.db_user }}"
+      MYSQL_PASSWORD: "{{ githubvoting.db_password }}"
+      MYSQL_ROOT_PASSWORD: "{{ githubvoting.db_root_password }}"
+    networks:
+      - proxy
+      - voting_network
+    volumes:
+      - {{ githubvoting.db_path }}:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
 networks:
-  traefik_network:
+  proxy:
     external: true

@@ -51,34 +51,36 @@ Anonymous upvotes on features. Uses client-side generated UUIDs to prevent dupli
 
 3. **Build and start containers**
    ```bash
-   docker-compose up -d --build
+   docker compose up -d --build
    ```
 
 4. **Install dependencies**
    ```bash
-   docker-compose exec app composer install
+   docker compose exec app composer install
    ```
 
 5. **Generate application key into .env**
    ```bash
-   docker-compose exec app php artisan key:generate
+   docker compose exec app php artisan key:generate
    ```
 
 6. **Run migrations**
    ```bash
-   docker-compose exec app php artisan migrate
+   docker compose exec app php artisan migrate
    ```
 
 7. **Seed database with sample data (optional)**
    ```bash
-   docker-compose exec app php artisan db:seed
+   docker compose exec app php artisan db:seed
    ```
 
-The API will be available at `http://localhost:8080`
+The application will be available at `http://localhost:8085`
+
+**Note:** For production deployment with Traefik, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## API Documentation
 
-Base URL: `http://localhost:8080/api/v1`
+Base URL: `http://localhost:8085/api/v1`
 
 ### Public Endpoints (No Authentication)
 
@@ -475,73 +477,6 @@ docker-compose up -d --build
 docker-compose exec app php artisan [command]
 ```
 
-## Production Deployment
-
-### Security Checklist
-
-1. ✅ Change `ADMIN_API_TOKEN` to a strong random string
-2. ✅ Set `APP_ENV=production`
-3. ✅ Set `APP_DEBUG=false`
-4. ✅ Use strong database passwords
-5. ✅ Enable HTTPS/TLS
-6. ✅ Configure proper CORS headers
-7. ✅ Review rate limiting thresholds
-8. ✅ Set up database backups
-9. ✅ Configure log rotation
-
-### Optimization Commands
-
-```bash
-# Cache configuration
-docker-compose exec app php artisan config:cache
-
-# Cache routes
-docker-compose exec app php artisan route:cache
-
-# Optimize autoloader
-docker-compose exec app composer dump-autoload --optimize
-
-# Clear all caches
-docker-compose exec app php artisan optimize:clear
-```
-
-## Architecture
-
-### Directory Structure
-
-```
-githubvoting/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   └── Api/
-│   │   │       ├── Admin/          # Admin controllers
-│   │   │       ├── FeatureController.php
-│   │   │       ├── ProjectController.php
-│   │   │       └── VoteController.php
-│   │   ├── Middleware/
-│   │   │   └── AdminApiAuthentication.php
-│   │   ├── Requests/               # Form validation
-│   │   └── Resources/              # API resources
-│   ├── Models/
-│   │   ├── Project.php
-│   │   ├── Feature.php
-│   │   └── Vote.php
-│   └── Providers/
-├── database/
-│   ├── migrations/
-│   └── seeders/
-├── routes/
-│   └── api.php                     # API routes
-├── tests/
-│   └── Feature/
-├── docker/
-│   └── nginx/
-├── docker-compose.yml
-├── Dockerfile
-└── README.md
-```
-
 ## Troubleshooting
 
 ### Database Connection Issues
@@ -554,24 +489,6 @@ docker-compose ps
 docker-compose logs db
 
 # Verify database credentials in .env match docker-compose.yml
-```
-
-### Permission Issues
-
-```bash
-# Fix storage permissions
-docker-compose exec app chmod -R 775 storage bootstrap/cache
-docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
-```
-
-### Port Already in Use
-
-If port 8080 is already in use, change it in `docker-compose.yml`:
-
-```yaml
-web:
-  ports:
-    - "8081:80"  # Change 8080 to 8081
 ```
 
 ## License
