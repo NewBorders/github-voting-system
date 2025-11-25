@@ -156,6 +156,23 @@
                     </div>
                 </dl>
             </div>
+            
+            <div class="card rounded-lg shadow p-6 border-2 border-red-900">
+                <h3 class="text-lg font-bold text-red-400 mb-4">⚠️ Danger Zone</h3>
+                <p class="text-sm text-gray-400 mb-4">
+                    Deleting this project will permanently remove all features and votes. This action cannot be undone.
+                </p>
+                <form action="{{ route('admin.projects.delete', $project) }}" 
+                      method="POST" 
+                      onsubmit="return confirm('⚠️ Are you absolutely sure?\n\nThis will delete:\n• Project: {{ $project->name }}\n• {{ $project->features->count() }} Features\n• {{ $project->features->sum(\'vote_count\') }} Votes\n\nThis action CANNOT be undone!\n\nType OK in the next prompt to confirm.') && prompt('Type DELETE to confirm:') === 'DELETE'">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="w-full bg-red-600 text-white px-4 py-3 rounded-md hover:bg-red-700 font-medium transition-colors">
+                        🗑️ Delete Project
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

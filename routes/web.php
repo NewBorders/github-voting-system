@@ -24,6 +24,7 @@ Route::middleware('admin.api')->prefix('admin')->name('admin.')->group(function 
     Route::post('/projects', [AdminController::class, 'storeProject'])->name('projects.store');
     Route::get('/projects/{project}/edit', [AdminController::class, 'editProject'])->name('projects.edit');
     Route::patch('/projects/{project}', [AdminController::class, 'updateProject'])->name('projects.update');
+    Route::delete('/projects/{project}', [AdminController::class, 'deleteProject'])->name('projects.delete');
     
     // GitHub Integration
     Route::post('/projects/{project}/sync', [AdminController::class, 'syncGithub'])->name('projects.sync');

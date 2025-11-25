@@ -129,6 +129,18 @@ class AdminController extends Controller
     }
 
     /**
+     * Delete a project.
+     */
+    public function deleteProject(Project $project)
+    {
+        $projectName = $project->name;
+        $project->delete();
+
+        return redirect()->route('admin.index')
+            ->with('success', "Project '{$projectName}' deleted successfully");
+    }
+
+    /**
      * Sync GitHub issues for a project.
      */
     public function syncGithub(Project $project)

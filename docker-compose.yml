@@ -49,6 +49,7 @@ services:
 
 networks:
   voting_network:
+    name: repo_voting_network
     driver: bridge
 
 volumes:
