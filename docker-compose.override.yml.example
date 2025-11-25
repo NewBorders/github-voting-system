@@ -3,7 +3,7 @@
 # The actual docker-compose.override.yml is managed by Ansible and should NOT be committed to git
 
 services:
-  web:
+  voting-web:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.githubvoting.rule=Host(`{{ githubvoting.host }}`)"
@@ -17,7 +17,7 @@ services:
       db:
         condition: service_healthy
 
-  app:
+  voting-app:
     labels:
       - "traefik.enable=false"
     networks:
@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
 
-  db:
+  voting-db:
     environment:
       MYSQL_DATABASE: "{{ githubvoting.db_name }}"
       MYSQL_USER: "{{ githubvoting.db_user }}"

@@ -1,9 +1,8 @@
 services:
-  app:
+  voting-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: voting-app
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -11,14 +10,13 @@ services:
     networks:
       - voting_network
     depends_on:
-      - db
+      - voting-db
     environment:
       - PHP_MEMORY_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=300
 
-  web:
+  voting-web:
     image: nginx:alpine
-    container_name: voting-web
     restart: unless-stopped
     ports:
       - "8085:80"
@@ -28,11 +26,10 @@ services:
     networks:
       - voting_network
     depends_on:
-      - app
+      - voting-app
 
-  db:
+  voting-db:
     image: mysql:8.0
-    container_name: voting-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
