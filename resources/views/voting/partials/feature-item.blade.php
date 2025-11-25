@@ -3,7 +3,11 @@
     $hasVoted = $feature->hasVoteFromClient($clientId);
 @endphp
 
-<div class="card rounded-lg shadow p-6 hover:shadow-xl transition-shadow">
+<div class="card rounded-lg shadow p-6 hover:shadow-xl transition-shadow cursor-pointer" 
+     x-data="{ expanded: false }" 
+     @click="if (!$event.target.closest('.vote-button, a, button')) expanded = !expanded"
+     data-feature-id="{{ $feature->id }}"
+     data-vote-count="{{ $feature->vote_count }}">
     <div class="flex items-start gap-4">
         <!-- Vote Button -->
         <div id="vote-{{ $feature->id }}">
@@ -27,7 +31,7 @@
             </div>
             
             @if($feature->description)
-                <div x-data="{ expanded: false }" class="mb-3">
+                <div class="mb-3">
                     <p class="text-gray-300" 
                        x-show="!expanded"
                        x-transition>
@@ -39,11 +43,11 @@
                        x-cloak>{{ $feature->description }}</p>
                     
                     @if(strlen($feature->description) > 200)
-                        <button @click="expanded = !expanded" 
+                        <button @click.stop="expanded = !expanded" 
                                 class="text-accent-light hover:text-accent text-sm mt-1 flex items-center">
                             <span x-show="!expanded">Show more</span>
                             <span x-show="expanded" x-cloak>Show less</span>
-                            <svg class="w-4 h-4 ml-1" 
+                            <svg class="w-4 h-4 ml-1 transition-transform" 
                                  :class="expanded ? 'rotate-180' : ''"
                                  fill="none" 
                                  stroke="currentColor" 
@@ -56,11 +60,7 @@
             @endif
             
             <div class="flex items-center gap-4 text-sm text-gray-400">
-                <span class="badge badge-{{ $feature->status }}">
-                    {{ ucfirst(str_replace('_', ' ', $feature->status)) }}
-                </span>
-                
-                <span>{{ $feature->created_at->diffForHumans() }}</span>
+                <span>{{ ($feature->github_created_at ?? $feature->created_at)->diffForHumans() }}</span>
             </div>
         </div>
     </div>

@@ -2,11 +2,15 @@
 
 ## 🎉 Latest Changes (November 24, 2025)
 
+**Status Badge Removed**: Removed redundant status badge from feature cards since all GitHub issues have the same status.
+
+**GitHub Issue Timestamps**: Features now show the GitHub issue creation date instead of the local database timestamp. The `github_created_at` field is automatically populated during GitHub sync.
+
 **GitHub Token Removed**: The system now works EXCLUSIVELY with public GitHub repos WITHOUT any authentication token. Private repo support has been removed.
 
 **Simplified Views**: All Blade templates use semantic CSS classes (`card`, `btn-primary`, `badge badge-status`) defined in ONE central file.
 
-**Dark Theme**: Eye-friendly dark purple theme (#1d1858) with excellent contrast.
+**Dark Theme**: Eye-friendly dark purple theme (#0f172a slate-900) with excellent contrast.
 
 **GitHub-Only Workflow**: Features exclusively from GitHub Issues - no manual creation needed!
 
@@ -15,19 +19,22 @@
 ## ✅ What Has Been Implemented
 
 ### Core System
-- **Dark Theme UI** with purple accent color (#1d1858 background, #2a2270 cards)
+- **Dark Theme UI** with slate accent color (#0f172a background, #1e293b cards)
 - **HTMX-based UI** for fast, reactive voting without page reloads
 - **Anonymous Voting** with localStorage-based client_id (UUID)
 - **Duplicate Vote Prevention** via unique constraint on (feature_id, client_id)
 - **Responsive Design** with TailwindCSS
 - **Eye-friendly Colors** with high contrast ratios (WCAG AAA compliant)
+- **Auto-Sort After Voting**: Feature list automatically re-sorts by vote count after each vote
+- **Clickable Cards**: Click anywhere on a feature card to expand/collapse description (except buttons/links)
 
 ### GitHub Integration (Simplified)
 - **Features come exclusively from GitHub Issues** - no separate workflow
 - **Automatic Issue Import** from GitHub repositories
 - **No Token Required** for public repos (works out of the box)
 - **Manual Sync Button** in Admin Panel
-- **Issue Tracking**: GitHub issue numbers and URLs are stored with each feature
+- **Issue Tracking**: GitHub issue numbers, URLs, and creation timestamps stored with each feature
+- **Accurate Timestamps**: Shows GitHub issue creation date, not local sync time
 
 ### Admin Dashboard
 - **Token-based Authentication** (Session + Cookie)

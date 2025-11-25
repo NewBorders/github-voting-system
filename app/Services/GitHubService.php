@@ -47,6 +47,7 @@ class GitHubService
                         'title' => $issue['title'],
                         'description' => $this->formatIssueDescription($issue),
                         'github_issue_url' => $issue['html_url'],
+                        'github_created_at' => $issue['created_at'] ?? null,
                         'github_synced_at' => now(),
                     ]);
                     $updated++;
@@ -59,6 +60,7 @@ class GitHubService
                         'status' => $this->mapIssueState($issue),
                         'github_issue_number' => $issue['number'],
                         'github_issue_url' => $issue['html_url'],
+                        'github_created_at' => $issue['created_at'] ?? null,
                         'github_synced_at' => now(),
                     ]);
                     $created++;

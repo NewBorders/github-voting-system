@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::table('features', function (Blueprint $table) {
             $table->bigInteger('github_issue_number')->nullable()->after('slug');
             $table->string('github_issue_url', 500)->nullable()->after('github_issue_number');
-            $table->timestamp('github_synced_at')->nullable()->after('github_issue_url');
+            $table->timestamp('github_created_at')->nullable()->after('github_issue_url');
+            $table->timestamp('github_synced_at')->nullable()->after('github_created_at');
             
             $table->index(['project_id', 'github_issue_number']);
         });

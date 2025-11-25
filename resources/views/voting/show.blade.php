@@ -58,6 +58,24 @@
     @endforelse
 </div>
 
+<script>
+// Auto-sort features by vote count after voting
+window.sortFeatures = function() {
+    setTimeout(() => {
+        const container = document.getElementById('features-list');
+        const features = Array.from(container.children).filter(el => el.hasAttribute('data-feature-id'));
+        
+        features.sort((a, b) => {
+            const votesA = parseInt(a.querySelector('[data-vote-count]')?.dataset.voteCount || a.dataset.voteCount || 0);
+            const votesB = parseInt(b.querySelector('[data-vote-count]')?.dataset.voteCount || b.dataset.voteCount || 0);
+            return votesB - votesA; // Descending order
+        });
+        
+        features.forEach(feature => container.appendChild(feature));
+    }, 100);
+};
+</script>
+
 @if($features->hasPages())
     <div class="mt-6">
         {{ $features->links() }}
