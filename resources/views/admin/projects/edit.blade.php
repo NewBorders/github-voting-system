@@ -164,7 +164,7 @@
                 </p>
                 <form action="{{ route('admin.projects.delete', $project) }}" 
                       method="POST" 
-                      onsubmit="return confirm('⚠️ Are you absolutely sure?\n\nThis will delete:\n• Project: {{ $project->name }}\n• {{ $project->features->count() }} Features\n• {{ $project->features->sum(\'vote_count\') }} Votes\n\nThis action CANNOT be undone!\n\nType OK in the next prompt to confirm.') && prompt('Type DELETE to confirm:') === 'DELETE'">
+                      onsubmit="return confirm('⚠️ Are you absolutely sure?\n\nThis will delete:\n• Project: {{ $project->name }}\n• {{ $project->features->count() }} Features\n• {{ $project->features->sum('vote_count') }} Votes\n\nThis action CANNOT be undone!\n\nType OK in the next prompt to confirm.') && prompt('Type DELETE to confirm:') === 'DELETE'">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
