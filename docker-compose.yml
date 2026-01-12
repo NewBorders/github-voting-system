@@ -1,3 +1,4 @@
+name: voting
 services:
   voting-app:
     build:

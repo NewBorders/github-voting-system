@@ -2,6 +2,7 @@
 # This file shows the structure for production deployment with Traefik
 # The actual docker-compose.override.yml is managed by Ansible and should NOT be committed to git
 
+name: voting
 services:
   voting-web:
     labels:
